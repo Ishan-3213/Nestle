@@ -25,7 +25,7 @@ load_dotenv()
 
 # Configuration for Azure OpenAI
 AZURE_OPENAI_KEY = os.getenv("OPENAI_API_KEY")
-AZURE_OPENAI_ENDPOINT = os.getenv("OPENAI_ENDPOINT", "")
+AZURE_OPENAI_ENDPOINT = os.getenv("OPENAI_ENDPOINT", "https://c0903-mb86l1hp-eastus2.cognitiveservices.azure.com/")
 AZURE_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME", "gpt-4.1")
 EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT", "text-embedding-ada-002")
 API_VERSION = os.getenv("OPENAI_API_VERSION", "2024-12-01-preview")
