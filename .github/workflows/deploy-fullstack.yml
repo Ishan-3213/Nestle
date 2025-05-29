@@ -33,7 +33,7 @@ jobs:
           tar -czf backend.tar.gz nestle-chatbot-backend
 
       - name: Upload Backend Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend
           path: backend.tar.gz
