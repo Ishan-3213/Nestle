@@ -5,7 +5,7 @@ function App() {
     <div
   className="app"
   style={{
-    backgroundImage: "url('/NestleBG.jpg')",
+    backgroundImage: "url('../public/NestleBG.jpg')",
     backgroundSize: "cover",
     backgroundPosition: "left center",
     height: "100vh",
