@@ -25,7 +25,16 @@ nestle-chatbot/
 │   ├── main.py
 │   ├── requirements.txt
 │   ├── .env
-│   └── ...
+│   ├── main.py                  # FastAPI main entrypoint
+|   ├── openai_service.py        # Azure OpenAI chat + embeddings
+|   ├── scraper.py               # Playwright or requests-based website scraper
+|   ├── indexer_service.py       # Indexes scraped documents into Azure AI Search
+|   ├── search_service.py        # Queries Azure AI Search
+|   ├── graphRAG.py              # Optional graph-based RAG pipeline
+|   ├── .env                     # Environment variables
+|   ├── Scraped/
+|   │   └── chat_history.json    # Message history persistence
+|   └── requirements.txt
 ```
 
 ---
@@ -115,7 +124,17 @@ The frontend will run at:
 http://localhost:5173
 ```
 
-✅ You can now type in the chatbot and receive a dummy response from the backend.
+## 🤝 Assistant Behaviour
+
+The assistant operates with the following guidelines:
+
+- Maintains a friendly yet professional tone.
+- Provides concise answers (1–2 paragraphs).
+- Avoids making health claims.
+- Always refers to Canadian product names.
+- Advises users to check product packaging if uncertain.
+- Recommends contacting Nestlé Canada support for unresolved questions.
+- Persists the past 3 user interactions locally in `Scraped/chat_history.json`.
 
 ---
 
@@ -129,11 +148,8 @@ http://localhost:5173
 
 ---
 
-## 🚧 To-Do (Next Steps)
+## ⚠️ Important Notes
 
-- [ ] Add AI capabilities using OpenAI or GraphRAG
-- [ ] Integrate web scraping + FAISS or Azure Cognitive Search
-- [ ] Add avatar icons for user/bot
-- [ ] Show typing animation
-- [ ] Deploy frontend to Vercel / Netlify
-- [ ] Deploy backend to Azure / Render / Railway
+- You must have access to Azure OpenAI and Azure Cognitive Search services to enable advanced features.
+- The backend uses a permissive CORS policy (`*`) for development; update this to restrict origins before deploying to production.
+- The scraper saves data locally by default and can optionally upload to Azure Blob Storage.
