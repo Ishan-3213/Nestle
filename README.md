@@ -1,4 +1,4 @@
-# 🤖 Nestlé AI Chatbot
+# 🤖 Nestlé AI Chatbot 
 
 An AI-powered chatbot built for the [Made with Nestlé](https://www.madewithnestle.ca/) website.  
 This project uses:
@@ -7,6 +7,7 @@ This project uses:
 - ⚛️ React + TypeScript (frontend UI with Vite)
 - 💬 Floating chat UI over a screenshot background
 - 🧪 Returns user related response, based on the query
+- 🚀 Live Demo: https://ishan-3213.github.io/Nestle/
 
 ---
 
