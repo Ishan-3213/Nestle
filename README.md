@@ -22,9 +22,6 @@ nestle-chatbot/
 │   ├── .env
 │   └── ...
 ├── backend/                 # FastAPI server
-│   ├── main.py
-│   ├── requirements.txt
-│   ├── .env
 │   ├── main.py                  # FastAPI main entrypoint
 |   ├── openai_service.py        # Azure OpenAI chat + embeddings
 |   ├── scraper.py               # Playwright or requests-based website scraper
