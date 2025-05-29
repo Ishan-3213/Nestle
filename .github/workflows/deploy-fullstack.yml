@@ -1,4 +1,4 @@
-name: Deploy FastAPI + React App to GitHub
+name: Deploy FastAPI + React App to GitHub Pages
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
+      - name: Install Backend Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r nestle-chatbot-backend/requirements.txt
@@ -52,7 +52,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install dependencies
+      - name: Install Frontend Dependencies
         working-directory: nestle-chatbot-frontend
         run: npm install
 
@@ -60,21 +60,9 @@ jobs:
         working-directory: nestle-chatbot-frontend
         run: npm run build
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Push changes to gh-pages branch
-        env:
-          TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
-          npx gh-pages -d nestle-chatbot-frontend/dist
-
-      # Optional: if using peaceiris/actions-gh-pages instead of gh-pages CLI
-      # - name: Deploy to GitHub Pages
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GH_PAT }}
-      #     publish_dir: nestle-chatbot-frontend/dist
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GH_PAT }}
+          publish_dir: nestle-chatbot-frontend/dist
+          publish_branch: gh-pages
