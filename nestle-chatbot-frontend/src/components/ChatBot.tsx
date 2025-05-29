@@ -5,32 +5,25 @@ const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Predefined messages
-  const predefinedMessages = [
-    { sender: "bot", text: "Hello! I'm your Nestlé Assistant. How can I help you today?" },
-  ];
-
-  // Load predefined messages when chat opens
+  // When chat opens, add welcome message once
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages(predefinedMessages);
+      setMessages([
+        {
+          sender: "bot",
+          text: "Ready to serve you! I'm NestléBot to help you with anything.",
+        },
+      ]);
     }
   }, [isOpen]);
 
-  // Auto-scroll to bottom when messages change
+  // Scroll to bottom when messages update
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const toggleChat = () => {
-    setIsOpen(!isOpen);
-  };
+  }, [messages, isLoading]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -38,6 +31,7 @@ const Chatbot = () => {
     const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
@@ -47,30 +41,29 @@ const Chatbot = () => {
       });
 
       const data = await response.json();
-      const botMessage = { sender: "bot", text: data.response };
-      setMessages((prev) => [...prev, botMessage]);
+
+      setMessages((prev) => [...prev, { sender: "bot", text: data.response }]);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
         { sender: "bot", text: "Error contacting server." },
       ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="chatbot-container">
-      <button className="chatbot-toggle" onClick={toggleChat}>
-        💬
-      </button>
+      <button className="chatbot-toggle" onClick={() => setIsOpen(!isOpen)}>💬</button>
 
       {isOpen && (
         <div className="chatbot-window">
           <div className="chatbot-header">
             <span>Nestlé Assistant</span>
-            <button className="chatbot-close" onClick={toggleChat}>
-              ×
-            </button>
+            <button className="chatbot-close" onClick={() => setIsOpen(false)}>×</button>
           </div>
+
           <div className="chatbot-messages">
             {messages.map((msg, idx) => (
               <div key={idx} className={`message ${msg.sender}`}>
@@ -88,16 +81,56 @@ const Chatbot = () => {
                 <div className="message-text">{msg.text}</div>
               </div>
             ))}
+
+            {isLoading && (
+              <div className="message bot loading">
+                <div className="message-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    className="loading-icon"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                      strokeDasharray="60"
+                      strokeDashoffset="0"
+                    >
+                      <animate
+                        attributeName="stroke-dashoffset"
+                        values="0;240"
+                        dur="1.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </svg>
+                </div>
+                <div className="message-text">
+                  Responding<span className="dots">...</span>
+                </div>
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </div>
+
           <div className="chatbot-input">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask something..."
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              disabled={isLoading}
             />
-            <button onClick={sendMessage}>➤</button>
+            <button onClick={sendMessage} disabled={isLoading}>
+              ➤
+            </button>
           </div>
         </div>
       )}
