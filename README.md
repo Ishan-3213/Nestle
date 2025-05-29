@@ -6,7 +6,7 @@ This project uses:
 - 🧠 FastAPI (Python backend)
 - ⚛️ React + TypeScript (frontend UI with Vite)
 - 💬 Floating chat UI over a screenshot background
-- 🧪 Returns dummy responses (can later connect to RAG, FAISS, or Neo4j)
+- 🧪 Returns user related response, based on the query
 
 ---
 
@@ -22,9 +22,6 @@ nestle-chatbot/
 │   ├── .env
 │   └── ...
 ├── backend/                 # FastAPI server
-│   ├── main.py
-│   ├── requirements.txt
-│   ├── .env
 │   ├── main.py                  # FastAPI main entrypoint
 |   ├── openai_service.py        # Azure OpenAI chat + embeddings
 |   ├── scraper.py               # Playwright or requests-based website scraper
