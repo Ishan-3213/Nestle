@@ -6,6 +6,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isFirstApiCall, setIsFirstApiCall] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // When chat opens, add welcome message once
@@ -34,19 +35,49 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
+      // For first API call, show waiting message while request is processing
+      if (isFirstApiCall) {
+        setMessages((prev) => [
+          ...prev,
+          { 
+            sender: "bot", 
+            text: "Please wait while we wake up the server. This may take 1-3 minutes for the first request..." 
+          }
+        ]);
+        
+        // Set timeout to show the user we're still working if it takes too long
+        const timeout = setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            { 
+              sender: "bot", 
+              text: "Still working on your request... Server is initializing. Thanks for your patience!" 
+            }
+          ]);
+        }, 60000); // Show after 1 minute
+      }
+
+      // Make the actual API call
       const response = await fetch(`https://nestle-th3j.onrender.com/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
       });
-
+      
       const data = await response.json();
 
+      // Remove any waiting messages if they exist
+      setMessages(prev => prev.filter(msg => 
+        !msg.text.includes("Please wait") && !msg.text.includes("Still working")
+      ));
+      
+      // Add the actual response
       setMessages((prev) => [...prev, { sender: "bot", text: data.response }]);
+      setIsFirstApiCall(false);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "Error contacting server." },
+        { sender: "bot", text: "Error contacting server. Please try again." },
       ]);
     } finally {
       setIsLoading(false);
@@ -112,7 +143,7 @@ const Chatbot = () => {
                   </svg>
                 </div>
                 <div className="message-text">
-                  Responding<span className="dots">...</span>
+                  Processing<span className="dots">...</span>
                 </div>
               </div>
             )}
