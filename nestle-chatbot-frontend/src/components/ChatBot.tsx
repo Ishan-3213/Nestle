@@ -46,7 +46,7 @@ const Chatbot = () => {
         ]);
         
         // Set timeout to show the user we're still working if it takes too long
-        const timeout = setTimeout(() => {
+        setTimeout(() => {
           setMessages((prev) => [
             ...prev,
             { 
